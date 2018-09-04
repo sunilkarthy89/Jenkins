@@ -1,0 +1,45 @@
+---
+- name: "demo playbook 1"
+  hosts: onelocal
+  serial: 1
+
+  tasks:
+  - name: "Task 1 from demo playbook 1"
+    debug: 
+      msg: "Hello {{ host_name }}"
+  
+  - name: "WHOAMI"
+    command: "whoami"
+
+  - name: "Createing directory"
+    file:
+     path: "{{ host_name }}"
+     state: directory
+     mode: 0777
+
+  - name: "download temp files"
+    get_url:
+      url: http://18.222.225.58/deploy.zip
+      dest: "{{ host_name }}"
+
+  - name: "Extract deployed file"
+    command: "unzip -o {{ host_name }}/deploy.zip -d ./{{ host_name }}"
+
+  - name: "Adding content to extracted file"
+    lineinfile:
+       path: "{{ host_name }}/deploy.txt"
+       insertafter: '^'
+       line: "This is the content added from demo2.yml"
+       state: present
+
+  - name: "Create folder 2"
+    file:
+     path: "{{ host_name }}2"
+     state: directory
+     mode: 0777
+
+  - name: "download using unarchive"
+    unarchive:
+     src: http://18.222.225.58/deploy.zip
+     dest: "{{ host_name }}2"
+     remote_src: yes

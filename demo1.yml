@@ -1,0 +1,23 @@
+---
+- name: "demo playbook 1"
+  hosts: all
+
+  tasks:
+  - name: "Task 1 from demo playbook 1"
+    debug: 
+      msg: "Hello {{ host_name }}"
+  
+  - name: "WHOAMI"
+    command: "whoami"
+
+  - name: "Createing directory"
+    file:
+     path: "{{ host_name }}"
+     state: directory
+     mode: 0777
+
+  - name: "Create junk files"
+    file:
+      path: "{{ host_name }}/junk.txt"
+      state: touch
+      mode: 0755
